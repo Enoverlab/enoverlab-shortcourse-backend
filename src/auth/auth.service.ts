@@ -4,6 +4,7 @@ import { signupDto } from './dto/signupDto';
 import * as bcrypt from 'bcrypt'
 import { loginDto } from './dto/loginDto';
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +20,9 @@ export class AuthService {
         this.userService.createUser(transformedUserDetails)
         return 'User Created Successfully'
         } catch (error) {
-            console.log(error)
+            if(error instanceof HttpException){
+                throw new HttpException(error.message, 400)
+            }
             throw new HttpException('An error Occured, Contact Dev Team', 404)
         }
 
@@ -27,30 +30,28 @@ export class AuthService {
     }
 
     async signIn(signInDetails: loginDto, response ){
-        try {
-            const {email, password} = signInDetails
-            const existingUser = await this.userService.findUserByEmail(email)
-            console.log(existingUser)
-            if(!existingUser) throw new NotFoundException('User not found')
-            
-            const match = await bcrypt.compare(password, existingUser.password)
+        const {email, password} = signInDetails
+        const existingUser = await this.userService.findUserByEmail(email)
+        if(!existingUser) throw new NotFoundException('User not found')
+        
+        const match = await bcrypt.compare(password, existingUser.password)
 
-            if(!match)
-                throw  new UnauthorizedException('Incorrect Email or Password')
+        if(!match)
+            throw  new UnauthorizedException('Incorrect Email or Password')
 
-            response.clearCookie("auth_token",{path : '/', domain : 'localhost', httpOnly : true, signed : true})
-            const payload = { sub: existingUser._id};
-            const token = await this.jwtService.signAsync(payload)
+        response.clearCookie("auth_token",{path : '/', domain : 'localhost', httpOnly : true, signed : true})
+        const payload = { sub: existingUser._id};
+        const token = await this.jwtService.signAsync(payload)
 
-            const expires = new Date()
-            expires.setDate(expires.getDate() + 7)
+        const expires = new Date()
+        expires.setDate(expires.getDate() + 7)
 
-            response.cookie("auth_token", token, {path : '/', domain : 'localhost', expires, httpOnly : true, signed : true})
+        response.cookie("auth_token", token, {path : '/', domain : 'localhost', expires, httpOnly : true, signed : true})
+        return 'Sign in successful'
+    }
 
-        } catch (error) {
-            console.log(error)
-            throw new HttpException(`An error occured, contact dev team. Error log: ${new Date().getDate()}, ${new Date().getTime()}`, 400)
-        }
+    async whoami(request){
+        return request.user
     }
 
 
