@@ -16,6 +16,6 @@ import { ConfigModule } from '@nestjs/config';
     signOptions : {expiresIn : '7d'}
   })],
   providers: [AuthService],
-  controllers: [AuthController]
+  controllers: [AuthController],
 })
 export class AuthModule {}

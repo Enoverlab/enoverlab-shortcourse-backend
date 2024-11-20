@@ -10,8 +10,8 @@ export class AuthController {
     constructor (private authservice : AuthService){}
     @Post('signup')
     @UsePipes(new ValidationPipe({transform : true}))
-    createUser(@Body() userData:signupDto){
-        return this.authservice.signUp(userData)
+    createUser(@Body() userData:signupDto, @Res({passthrough: true}) response:Response){
+        return this.authservice.signUp(userData, response)
     }
 
     @HttpCode(HttpStatus.OK)
