@@ -38,9 +38,7 @@ import { UserService } from 'src/user/user.service';
   
     private extractTokenFromRequest(request: Request): string | undefined {
         if(request && request.signedCookies){
-          console.log(request.signedCookies)
-          console.log(request.signedCookies.auth_token)
-            return request.signedCookies.auth_token
+          return request.signedCookies.auth_token
         }
         return undefined
     }

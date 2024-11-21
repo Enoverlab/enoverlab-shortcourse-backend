@@ -10,7 +10,6 @@ export class UserService {
 
     async createUser(createUserDto: createUserDto){
         try {
-            console.log(createUserDto)
             const user = new this.userModel(createUserDto)
             await user.save()
             return user

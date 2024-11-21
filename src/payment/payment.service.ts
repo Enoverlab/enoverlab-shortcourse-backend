@@ -7,17 +7,22 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 @Injectable()
 export class PaymentService {
     async initializePayment(paymentDetails : initializePaymentDto, request){
-        const data = {
-            cus_id : request.user
+        try {
+            const data = {
+                cus_id : request.user._id
+            }
+            const stringifiedData = JSON.stringify(data)
+            const values = {
+                ...paymentDetails,
+                email : request.user.email,
+                currency : 'NGN',
+                metadata : stringifiedData
+    
+            }
+            const response = await axios.post('https://api.paystack.co/transaction/initialize', values)
+            return response.data.data
+        } catch (error) {
+            console.log(error)
         }
-        const stringifiedData = JSON.stringify(data)
-        const values = {
-            ...paymentDetails,
-            metadata : stringifiedData
-
-        }
-        console.log(values)
-        return values
-        // await axios.post('https://api.paystack.co/transaction/initialize')
     }
 }

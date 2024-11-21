@@ -10,6 +10,15 @@ export class Course {
     @Prop({required : true})
     description : string
 
+    @Prop({required : true})
+    courseImg : string
+
+    @Prop({required : true})
+    instructorName : string
+
+    @Prop({required : true})
+    learningPoints : string[]
+
     @Prop({required : true, type : Number})
     price : number
 
@@ -33,14 +42,17 @@ export class Module {
 
     @Prop({required : true, type : [{type : String}]})
     lessonVideos : string[]
+
+    @Prop({required : true, type : mongoose.Schema.Types.ObjectId, ref : 'Course'})
+    courseId : Course
 }
 
 @Schema()
 export class Rating {
-    @Prop({required : true, type : mongoose.Schema.Types.ObjectId})
+    @Prop({required : true, type : mongoose.Schema.Types.ObjectId, ref : 'User'})
     userId : User
 
-    @Prop({required : true, type : mongoose.Schema.Types.ObjectId})
+    @Prop({required : true, type : mongoose.Schema.Types.ObjectId, ref : 'Course'})
     courseId : Course
 
     @Prop({required : true, type : Number, min : 1, max : 5})
