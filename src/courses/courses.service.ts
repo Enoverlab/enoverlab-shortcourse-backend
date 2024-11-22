@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { createCourseDto } from './courses.dtos';
 import {v2 as Cloudinary, UploadApiResponse} from 'cloudinary'
+import * as fs from 'fs'
 
 
 @Injectable()
@@ -16,6 +17,7 @@ export class CoursesService {
         let result : UploadApiResponse
         if(file){
             result = await this.cloudinary.uploader.upload(file.path, {folder : 'course_Images'})
+            fs.unlinkSync(file.path)
         }
             
         try {
@@ -24,7 +26,12 @@ export class CoursesService {
             return newCourse
         } catch (error) {
             console.log(error)
-            result && await this.cloudinary.uploader.destroy(result.public_id)
+            if (result){
+                await this.cloudinary.uploader.destroy(result.public_id)
+            }
+            if(file){
+                fs.unlinkSync(file.path)
+            }
             throw new HttpException(error, 401)
         }
     }
