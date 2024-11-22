@@ -16,14 +16,14 @@ export class AuthService {
             const hashedPassword = await bcrypt.hash(signupdetails.password, Number(process.env.SALT_ROUNDS))
             const transformedUserDetails = {...signupdetails, password : hashedPassword}
             const userDetails = await this.userService.createUser(transformedUserDetails)
-            response.clearCookie("auth_token",{path : '/', domain : 'localhost', httpOnly : true, signed : true})
+            response.clearCookie("auth_token",{path : '/', domain : 'localhost', httpOnly : true, signed : true, sameSite : 'none'})
             const payload = {sub: userDetails._id};
             const token = await this.jwtService.signAsync(payload)
 
             const expires = new Date()
             expires.setDate(expires.getDate() + 7)
 
-            response.cookie("auth_token", token, {path : '/', domain : 'localhost', expires, httpOnly : true, signed : true})
+            response.cookie("auth_token", token, {path : '/', domain : 'localhost', expires, httpOnly : true, signed : true, sameSite : 'none'})
 
             return userDetails
         } catch (error) {
@@ -44,14 +44,14 @@ export class AuthService {
         if(!match)
             throw  new UnauthorizedException('Incorrect Email or Password')
 
-        response.clearCookie("auth_token",{path : '/', domain : 'localhost', httpOnly : true, signed : true})
+        response.clearCookie("auth_token",{path : '/', domain : 'localhost', httpOnly : true, signed : true, sameSite : 'none'})
         const payload = { sub: existingUser._id};
         const token = await this.jwtService.signAsync(payload)
 
         const expires = new Date()
         expires.setDate(expires.getDate() + 7)
 
-        response.cookie("auth_token", token, {path : '/', domain : 'localhost', expires, httpOnly : true, signed : true})
+        response.cookie("auth_token", token, {path : '/', domain : 'localhost', expires, httpOnly : true, signed : true, sameSite : 'none'})
         const userDetails = existingUser.toObject()
         delete userDetails.password
         return userDetails
