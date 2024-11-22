@@ -18,7 +18,7 @@ import { UserService } from 'src/user/user.service';
       const request = context.switchToHttp().getRequest();
       const token = this.extractTokenFromRequest(request);
       if (!token) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('No token found');
       }
       try {
         const payload = await this.jwtService.verifyAsync(
@@ -30,8 +30,8 @@ import { UserService } from 'src/user/user.service';
 
         request['user'] = await this.userService.findUserById(payload.sub);
 
-      } catch {
-        throw new UnauthorizedException();
+      } catch(error) {
+        throw new UnauthorizedException(error);
       }
       return true;
     }
