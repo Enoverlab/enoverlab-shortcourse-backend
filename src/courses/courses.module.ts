@@ -2,12 +2,16 @@ import { Module } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Course, CourseSchema } from './courses.schema';
+import { CoursesController } from './courses.controller';
+import { UserModule } from 'src/user/user.module';
+import { CloudinaryConfig } from 'src/config/cloudinary.config';
 
 @Module({
   imports : [MongooseModule.forFeature([{
     name : Course.name,
     schema : CourseSchema
-  }])],
-  providers: [CoursesService]
+  }]), UserModule],
+  providers: [CoursesService, CloudinaryConfig],
+  controllers: [CoursesController]
 })
 export class CoursesModule {}

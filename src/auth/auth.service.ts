@@ -17,7 +17,7 @@ export class AuthService {
             const transformedUserDetails = {...signupdetails, password : hashedPassword}
             const userDetails = await this.userService.createUser(transformedUserDetails)
             response.clearCookie("auth_token",{path : '/', domain : 'localhost', httpOnly : true, signed : true})
-            const payload = { sub: userDetails._id};
+            const payload = {sub: userDetails._id};
             const token = await this.jwtService.signAsync(payload)
 
             const expires = new Date()
@@ -25,7 +25,7 @@ export class AuthService {
 
             response.cookie("auth_token", token, {path : '/', domain : 'localhost', expires, httpOnly : true, signed : true})
 
-            return 'User Created Successfully'
+            return userDetails
         } catch (error) {
             if(error instanceof HttpException){
                 throw new HttpException(error.message, 400)
@@ -52,7 +52,9 @@ export class AuthService {
         expires.setDate(expires.getDate() + 7)
 
         response.cookie("auth_token", token, {path : '/', domain : 'localhost', expires, httpOnly : true, signed : true})
-        return 'Sign in successful'
+        const userDetails = existingUser.toObject()
+        delete userDetails.password
+        return userDetails
     }
 
     async whoami(request){

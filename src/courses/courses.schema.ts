@@ -22,6 +22,9 @@ export class Course {
     @Prop({required : true, type : Number})
     price : number
 
+    @Prop({required : true, enum : ['basic','advanced', 'intermediate'], default : 'basic'})
+    courseLevel : string
+
     @Prop({type : [{ type : mongoose.Schema.Types.ObjectId, ref : 'Module'}]})
     modules : Module[]
 

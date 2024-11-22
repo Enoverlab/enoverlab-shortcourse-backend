@@ -12,7 +12,9 @@ export class UserService {
         try {
             const user = new this.userModel(createUserDto)
             await user.save()
-            return user
+            const userData = user.toObject()
+            delete userData.password
+            return userData
         } catch (error) {
             console.log(error)
             throw new HttpException(error, 400)
