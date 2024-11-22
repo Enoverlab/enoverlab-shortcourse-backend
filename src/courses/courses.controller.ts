@@ -13,7 +13,7 @@ export class CoursesController {
     @HttpCode(HttpStatus.OK)
     @Post('create_course')
     @UseGuards(AuthGuard)
-    @UseInterceptors(FileInterceptor('courseImg', {dest : 'uploads'}))
+    @UseInterceptors(FileInterceptor('courseImg', {dest : 'uploads/'}))
     createCourse(@Body() courseDetails: createCourseDto, @Req() request:requestObj, @UploadedFile(new FileSizeValidationPipe()) file : Express.Multer.File){
         return this.courseService.createCourse(courseDetails, request, file)
     }
@@ -21,9 +21,8 @@ export class CoursesController {
     @HttpCode(HttpStatus.OK)
     @Post('create_module')
     @UseGuards(AuthGuard)
-    @UseInterceptors(FileInterceptor('courseImg', {dest : '/uploads'}))
-    createModule(@Body() courseDetails: createCourseDto, @Req() request:requestObj, @UploadedFile(new FileSizeValidationPipe()) file : Express.Multer.File){
-        return this.courseService.createCourse(courseDetails, request, file)
+    createModule(@Body() courseDetails: createCourseDto, @Req() request:requestObj){
+        console.log('yay')
     }
 
 }
