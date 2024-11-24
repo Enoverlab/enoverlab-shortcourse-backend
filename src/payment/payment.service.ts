@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { initializePaymentDto } from './payment.dtos';
 import axios from 'axios';
-axios.defaults.headers.common['Authorization'] = process.env.PK_SK
+axios.defaults.headers.common['Authorization'] = process.env.NODE_ENV != 'development' ? process.env.PK_SK : process.env.PK_SKTEST
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 @Injectable()
