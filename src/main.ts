@@ -7,7 +7,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({transform : true, transformOptions: {
     enableImplicitConversion: true, // <- This line here
   },}))
-  app.enableCors({origin : ['http://localhost:3000','http://localhost:5173', 'https://enoverlab-shortcourses.vercel.app'], credentials : true})
+  app.enableCors({origin : ['http://localhost:3000','http://localhost:5173', 'https://enoverlab-shortcourses.vercel.app', 'https://enoverlab-shortcourses-git-dev-9b715f-oladimeji-momohs-projects.vercel.app/'], credentials : true})
 
   app.use(cookieParser(process.env.COOKIE_SECRET))
   await app.listen(process.env.PORT ?? 3000);
