@@ -43,8 +43,8 @@ export class Module {
     @Prop({required : true, type : String})
     content : string
 
-    @Prop({required : true, type : [{type : String}]})
-    lessonVideos : string[]
+    @Prop({required : true})
+    lessonVideo : string
 
     @Prop({required : true, type : mongoose.Schema.Types.ObjectId, ref : 'Course'})
     courseId : Course
@@ -69,6 +69,7 @@ export class Rating {
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course)
+CourseSchema.index({title : 'text'})
 
 export const ModuleSchema = SchemaFactory.createForClass(Module)
 

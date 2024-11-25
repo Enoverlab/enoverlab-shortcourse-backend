@@ -1,8 +1,8 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CoursesService, FileSizeValidationPipe } from './courses.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { requestObj } from 'src/declarations';
-import { createCourseDto } from './courses.dtos';
+import { createCourseDto, getCourseDto } from './courses.dtos';
 import {Express} from 'express'
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -23,6 +23,18 @@ export class CoursesController {
     @UseGuards(AuthGuard)
     createModule(@Body() courseDetails: createCourseDto, @Req() request:requestObj){
         console.log('yay')
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Get('getAllcourse')
+    getcourses(@Query('courseLevel') courseLevel : string, @Query('courseName') courseName : string){
+        return this.courseService.getAllCourses(courseLevel, courseName)
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Get('getcourseById')
+    getcourseById(@Query('courseId') courseId : string){
+        return this.courseService.getCoursebyId(courseId)
     }
 
 }
