@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CoursesModule } from './courses/courses.module';
 import { PaymentModule } from './payment/payment.module';
+import { MailModule } from './mail/mail.module';
 
 const testMongoString = process.env.MongoStringTest
 
@@ -14,7 +15,7 @@ const preferredDb = process.env.NODE_ENV == 'development' ? testMongoString :  p
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal : true
-  }), MongooseModule.forRoot(preferredDb), UserModule, AuthModule, CoursesModule, PaymentModule],
+  }), MongooseModule.forRoot(preferredDb), UserModule, AuthModule, CoursesModule, PaymentModule, MailModule],
   controllers: [],
   providers: [],
 })

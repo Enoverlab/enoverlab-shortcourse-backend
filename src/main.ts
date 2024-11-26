@@ -7,7 +7,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({transform : true, transformOptions: {
     enableImplicitConversion: true, // <- This line here
   },}))
-  app.enableCors({origin : ['http://localhost:3000','http://localhost:5173', 'https://enoverlab-shortcourses.vercel.app', 'https://enoverlab-shortcourses-git-dev-9b715f-oladimeji-momohs-projects.vercel.app'], credentials : true})
+  app.enableCors({origin : ['http://localhost:3000','http://localhost:5173', 'https://enoverlab-shortcourse-fe.vercel.app', 'https://enoverlab-shortcourse-fe-git-development-enoverlabs-projects.vercel.app/'], credentials : true})
 
   console.log(process.env)
 

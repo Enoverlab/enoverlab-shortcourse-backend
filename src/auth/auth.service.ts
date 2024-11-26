@@ -4,10 +4,11 @@ import { signupDto } from './dto/signupDto';
 import * as bcrypt from 'bcrypt'
 import { loginDto } from './dto/loginDto';
 import { JwtService } from '@nestjs/jwt';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
-    constructor( private userService: UserService, private jwtService : JwtService){}
+    constructor( private userService: UserService, private jwtService : JwtService, private mailService: MailService){}
 
     async signUp(signupdetails : signupDto, response){
         try {
@@ -19,13 +20,8 @@ export class AuthService {
             response.clearCookie("auth_token",{path : '/', httpOnly : true, signed : true, sameSite : 'none',secure : true})
             const payload = {sub: userDetails._id};
             const token = await this.jwtService.signAsync(payload)
-
-            const expires = new Date()
-            expires.setDate(expires.getDate() + 7)
-
-            response.cookie("auth_token", token, {path : '/', expires, httpOnly : true, signed : true,secure : true, sameSite : 'none'})
-
-            return userDetails
+            await this.mailService.sendUserConfirmation(userDetails, token);
+            return 'User successfully signed up'
         } catch (error) {
             if(error instanceof HttpException){
                 throw new HttpException(error.message, 400)
@@ -47,7 +43,10 @@ export class AuthService {
         response.clearCookie("auth_token",{path : '/', httpOnly : true, signed : true, sameSite : 'none', secure : true})
         const payload = { sub: existingUser._id};
         const token = await this.jwtService.signAsync(payload)
-
+        if(!existingUser.confirmedEmail){
+            await this.mailService.sendUserConfirmation(existingUser, token);
+            throw  new UnauthorizedException('Kindly Check your email to validate your account')
+        }
         const expires = new Date()
         expires.setDate(expires.getDate() + 7)
 
@@ -60,6 +59,38 @@ export class AuthService {
     async whoami(request){
         return request.user
     }
+
+    async emailVerifyStatus(token, response) {
+        const JWT_SECRET = process.env.JWT_SECRET
+        if (!token) {
+            throw new UnauthorizedException('No token found');
+        }
+          try {
+            const payload = await this.jwtService.verifyAsync(
+              token,
+              {
+                secret: JWT_SECRET
+              }
+            );
+            if(payload){
+                const userDetails = await this.userService.findUserByIdAndUpdate(payload.sub, {confirmedEmail : true});
+                response.clearCookie("auth_token",{path : '/', httpOnly : true, signed : true, sameSite : 'none', secure : true})
+                const newtoken = await this.jwtService.signAsync({sub : payload.sub})
+                const expires = new Date()
+                expires.setDate(expires.getDate() + 7)
+                response.cookie("auth_token", newtoken, {path : '/', expires, httpOnly : true, signed : true, sameSite : 'none', secure : true })
+                return userDetails
+            }else{
+                throw new UnauthorizedException('Verification failed, Proceed to Login')
+            }
+    
+          } catch(error) {
+            console.log(error)
+            throw new UnauthorizedException(error);
+          }
+    }
+
+    
 
 
 

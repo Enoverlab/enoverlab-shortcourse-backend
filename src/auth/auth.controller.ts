@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { signupDto } from './dto/signupDto';
 import { AuthService } from './auth.service';
 import { loginDto } from './dto/loginDto';
@@ -26,5 +26,12 @@ export class AuthController {
     @Get('whoami')
     whoami(@Req() request:Request){
         return this.authservice.whoami(request)
+    }
+
+
+    @HttpCode(HttpStatus.OK)
+    @Get('verifyStatus')
+    emailVerifyStatus(@Query('token') token : string, @Res({passthrough: true}) response:Response){
+        return this.authservice.emailVerifyStatus(token, response)
     }
 }
