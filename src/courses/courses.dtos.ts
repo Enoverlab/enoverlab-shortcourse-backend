@@ -30,3 +30,22 @@ export class createCourseDto {
     @IsNotEmpty()
     learningPoints : string[]
 }
+
+export class createModuleDto {
+    @IsString()
+    @IsNotEmpty()
+    title : string
+
+    @IsString()
+    @IsNotEmpty()
+    content : string
+
+    @IsString()
+    @IsOptional()
+    lessonvideos : string
+}
+
+export class getCourseDto {
+    @IsNotEmpty()
+    courseId : string
+}

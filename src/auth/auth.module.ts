@@ -4,6 +4,7 @@ import { AuthController } from './auth.controller';
 import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
+import { MailModule } from 'src/mail/mail.module';
 
 
 
@@ -14,7 +15,7 @@ import { ConfigModule } from '@nestjs/config';
     global : true,
     secret : process.env.JWT_SECRET,
     signOptions : {expiresIn : '7d'}
-  })],
+  }), MailModule],
   providers: [AuthService],
   controllers: [AuthController],
 })

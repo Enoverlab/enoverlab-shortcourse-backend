@@ -1,4 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import mongoose from "mongoose";
+import { Course } from "src/courses/courses.schema";
 
 @Schema({timestamps : true})
 export class User{
@@ -16,6 +18,33 @@ export class User{
 
     @Prop({default : false})
     confirmedEmail : boolean
+
+    @Prop({type : [{type : mongoose.Schema.Types.ObjectId, ref : 'UserPaidCourse'}]})
+    paidCourses: UserPaidCourse[]
+}
+
+
+@Schema({timestamps : true})
+export class UserPaidCourse{
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Course' })
+    courseId: Course
+
+    @Prop({type: Date, default: Date.now })
+    datePurchased: Date
+
+    @Prop({type: String, required : true })
+    userId: User
+
+    @Prop()
+    progress: [
+        {
+        moduleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Module' },
+        status: { type: String, enum: ['not started', 'in progress', 'completed'], default: 'not started' },
+        completedAt: { type: Date },
+        },
+    ]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
+
+export const UserPaidCourseSchema = SchemaFactory.createForClass(UserPaidCourse)

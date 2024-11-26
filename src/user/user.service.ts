@@ -37,4 +37,15 @@ export class UserService {
         
     }
 
+    async findUserByIdAndUpdate(Id: string, updateprop){
+        const match = mongoose.Types.ObjectId.isValid(Id)
+        if(match){
+            const userInfo =  await this.userModel.findByIdAndUpdate(Id, updateprop).select('-password').exec()
+            return userInfo
+        }else{
+            throw new HttpException('Invalid user Id', 400)
+        }
+        
+    }
+
 }
