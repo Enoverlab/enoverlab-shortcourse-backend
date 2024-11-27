@@ -3,25 +3,29 @@ import mongoose from "mongoose";
 import { Course } from "src/courses/courses.schema";
 
 @Schema({timestamps : true})
-export class User{
-    @Prop({unique : true, required : true})
-    email : string
-
-    @Prop({required : true})
-    name : string
-
-    @Prop({required : true})
-    password : string
-
-    @Prop({required : true, enum : ['student', 'admin', 'instructor'], default : 'student'})
-    role : string
-
-    @Prop({default : false})
-    confirmedEmail : boolean
-
-    @Prop({type : [{type : mongoose.Schema.Types.ObjectId, ref : 'UserPaidCourse'}]})
-    paidCourses: UserPaidCourse[]
-}
+export class User {
+    @Prop({ unique: true, required: true })
+    email: string;
+  
+    @Prop({ required: true })
+    name: string;
+  
+    @Prop()
+    password?: string;
+  
+    @Prop({ required: true, enum: ['student', 'admin', 'instructor'], default: 'student' })
+    role: string;
+  
+    @Prop({ default: false })
+    confirmedEmail: boolean;
+  
+    @Prop()
+    googleId?: string;
+  
+  
+    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserPaidCourse' }] })
+    paidCourses: UserPaidCourse[];
+  }
 
 
 @Schema({timestamps : true})
