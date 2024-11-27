@@ -7,5 +7,11 @@ export class signupDto extends loginDto {
     @IsNotEmpty()
     name : string
 
-    
+    @IsString()
+    @IsNotEmpty()
+    role: string;
+
+    @IsString()
+    @IsNotEmpty()
+    confirmedEmail: boolean;
 }
