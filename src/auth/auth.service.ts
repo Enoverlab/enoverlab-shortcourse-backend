@@ -7,8 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
 import { OAuth2Client } from 'google-auth-library';
 import { GoogleAuthDto } from './dto/google-auth.dto';
-import { User } from '../user/user.schema';  // Ensure User is imported
-import { Document } from 'mongoose';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -73,7 +72,7 @@ export class AuthService {
         return userDetails;
     }
 
-    async googleSignUp(googleAuthDto: GoogleAuthDto, response) {
+    async googleSignUp(googleAuthDto: GoogleAuthDto, response: Response) {
         const { token } = googleAuthDto;
     
         try {
@@ -85,25 +84,27 @@ export class AuthService {
             const googleUser = ticket.getPayload();
             if (!googleUser) throw new UnauthorizedException('Google login failed');
     
-            let existingUser = await this.userService.findUserByEmail(googleUser.email);
+            let user = await this.userService.findUserByEmail(googleUser.email);
     
-            if (!existingUser) {
-                // Create the user if it doesn't exist
-                existingUser = await this.userService.createUser({
+            let status: string;
+            if (!user) {
+                // Create a new user if none exists
+                user = await this.userService.createUser({
                     email: googleUser.email,
                     name: googleUser.name,
-                    password: null,
+                    password: null, // Google users don't need a password
                     role: 'user',
                     confirmedEmail: true,
                 });
+                status = 'new_user';
+            } else {
+                status = 'existing_user';
             }
     
-            // Cast the existingUser to the Mongoose Document type
-            const existingUserDocument = existingUser as User & Document;
-    
-            const payload = { sub: existingUserDocument._id };
+            const payload = { sub: user._id }; // Use the user's unique identifier
             const jwtToken = await this.jwtService.signAsync(payload);
     
+            // Set JWT as a secure HTTP-only cookie
             response.cookie("auth_token", jwtToken, {
                 path: '/',
                 httpOnly: true,
@@ -112,14 +113,16 @@ export class AuthService {
                 secure: true,
             });
     
-            const userDetails = existingUserDocument.toObject();
+            // Remove sensitive fields before returning user details
+            const userDetails = user.toObject();
             delete userDetails.password;
-            return userDetails;
+    
+            return { status, user: userDetails };
         } catch (error) {
             throw new UnauthorizedException('Google authentication failed');
         }
     }
-
+    
     async whoami(request) {
         return request.user;
     }
