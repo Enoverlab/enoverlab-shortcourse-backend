@@ -1,24 +1,21 @@
 import { HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { signupDto } from './dto/signupDto';
+import { GoogleAuthDto } from './dto/google-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { loginDto } from './dto/loginDto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
-import { OAuth2Client } from 'google-auth-library';
-import { GoogleAuthDto } from './dto/google-auth.dto';
 import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
-    private oauth2Client: OAuth2Client;
 
     constructor(
         private userService: UserService,
         private jwtService: JwtService,
         private mailService: MailService,
     ) {
-        this.oauth2Client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     }
 
     async signUp(signupdetails: signupDto, response) {
@@ -72,55 +69,55 @@ export class AuthService {
         return userDetails;
     }
 
-    async googleSignUp(googleAuthDto: GoogleAuthDto, response: Response) {
+    async googleSignIn(googleAuthDto: GoogleAuthDto, response: Response) {
         const { token } = googleAuthDto;
     
-        try {
-            const ticket = await this.oauth2Client.verifyIdToken({
-                idToken: token,
-                audience: process.env.GOOGLE_CLIENT_ID,
-            });
+        // try {
+        //     const ticket = await this.oauth2Client.verifyIdToken({
+        //         idToken: token,
+        //         audience: process.env.GOOGLE_CLIENT_ID,
+        //     });
     
-            const googleUser = ticket.getPayload();
-            if (!googleUser) throw new UnauthorizedException('Google login failed');
+        //     const googleUser = ticket.getPayload();
+        //     if (!googleUser) throw new UnauthorizedException('Google login failed');
     
-            let user = await this.userService.findUserByEmail(googleUser.email);
+        //     let user = await this.userService.findUserByEmail(googleUser.email);
     
-            let status: string;
-            if (!user) {
-                // Create a new user if none exists
-                user = await this.userService.createUser({
-                    email: googleUser.email,
-                    name: googleUser.name,
-                    password: null, // Google users don't need a password
-                    role: 'user',
-                    confirmedEmail: true,
-                });
-                status = 'new_user';
-            } else {
-                status = 'existing_user';
-            }
+        //     let status: string;
+        //     if (!user) {
+        //         // Create a new user if none exists
+        //         user = await this.userService.createUser({
+        //             email: googleUser.email,
+        //             name: googleUser.name,
+        //             password: null, // Google users don't need a password
+        //             role: 'user',
+        //             confirmedEmail: true,
+        //         });
+        //         status = 'new_user';
+        //     } else {
+        //         status = 'existing_user';
+        //     }
     
-            const payload = { sub: user._id }; // Use the user's unique identifier
-            const jwtToken = await this.jwtService.signAsync(payload);
+        //     const payload = { sub: user._id }; // Use the user's unique identifier
+        //     const jwtToken = await this.jwtService.signAsync(payload);
     
-            // Set JWT as a secure HTTP-only cookie
-            response.cookie("auth_token", jwtToken, {
-                path: '/',
-                httpOnly: true,
-                signed: true,
-                sameSite: 'none',
-                secure: true,
-            });
+        //     // Set JWT as a secure HTTP-only cookie
+        //     response.cookie("auth_token", jwtToken, {
+        //         path: '/',
+        //         httpOnly: true,
+        //         signed: true,
+        //         sameSite: 'none',
+        //         secure: true,
+        //     });
     
-            // Remove sensitive fields before returning user details
-            const userDetails = user.toObject();
-            delete userDetails.password;
+        //     // Remove sensitive fields before returning user details
+        //     const userDetails = user.toObject();
+        //     delete userDetails.password;
     
-            return { status, user: userDetails };
-        } catch (error) {
-            throw new UnauthorizedException('Google authentication failed');
-        }
+        //     return { status, user: userDetails };
+        // } catch (error) {
+        //     throw new UnauthorizedException('Google authentication failed');
+        // }
     }
     
     async whoami(request) {

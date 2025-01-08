@@ -38,6 +38,6 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Post('google')
     googleSignUp(@Body() googleAuthDto: GoogleAuthDto, @Res({ passthrough: true }) response: Response) {
-        return this.authservice.googleSignUp(googleAuthDto, response);
+        return this.authservice.googleSignIn(googleAuthDto, response);
     }
 }

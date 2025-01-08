@@ -11,9 +11,12 @@ const testMongoString = process.env.MongoStringTest
 
 const productionMongoString = process.env.MongoStringProd
 
+
+
 const preferredDb = process.env.NODE_ENV == 'development' ? testMongoString :  productionMongoString
 @Module({
-  imports: [ConfigModule.forRoot({
+  imports: [
+    ConfigModule.forRoot({
     isGlobal : true
   }), MongooseModule.forRoot(preferredDb), UserModule, AuthModule, CoursesModule, PaymentModule, MailModule],
   controllers: [],
