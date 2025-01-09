@@ -19,9 +19,11 @@ export class User {
     @Prop({ default: false })
     confirmedEmail: boolean;
   
-    @Prop()
-    googleId?: string;
-  
+    @Prop({required : true, enum : ['local', 'googleAuth']})
+    authMethod: string;
+
+    @Prop({required : false})
+    userimg?: string;
   
     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserPaidCourse' }] })
     paidCourses: UserPaidCourse[];

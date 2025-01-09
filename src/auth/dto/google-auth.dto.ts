@@ -1,9 +1,6 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsBoolean } from 'class-validator';
 
 export class GoogleAuthDto {
-  @IsString()
-  @IsNotEmpty()
-  token: string;
 
   @IsString()
   @IsNotEmpty()
@@ -12,4 +9,12 @@ export class GoogleAuthDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  userimg: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  confirmedEmail : boolean;
 }
