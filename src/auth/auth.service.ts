@@ -1,27 +1,24 @@
 import { HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { signupDto } from './dto/signupDto';
+import { GoogleAuthDto } from './dto/google-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { loginDto } from './dto/loginDto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
-import { OAuth2Client } from 'google-auth-library';
-import { GoogleAuthDto } from './dto/google-auth.dto';
 import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
-    private oauth2Client: OAuth2Client;
 
     constructor(
         private userService: UserService,
         private jwtService: JwtService,
         private mailService: MailService,
     ) {
-        this.oauth2Client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     }
 
-    async signUp(signupdetails: signupDto, response) {
+    async signUp(signupdetails: signupDto, response: Response) {
         try {
             const existingUser = await this.userService.findUserByEmail(signupdetails.email);
             if (existingUser) throw new HttpException('User already exists', 400);
@@ -44,7 +41,7 @@ export class AuthService {
         }
     }
 
-    async signIn(signInDetails: loginDto, response) {
+    async signIn(signInDetails: loginDto, response: Response) {
         const { email, password } = signInDetails;
         const existingUser = await this.userService.findUserByEmail(email);
         if (!existingUser) throw new NotFoundException('User not found');
@@ -72,52 +69,37 @@ export class AuthService {
         return userDetails;
     }
 
-    async googleSignUp(googleAuthDto: GoogleAuthDto, response: Response) {
-        const { token } = googleAuthDto;
-    
+    async googleSignIn(googleAuthDto: GoogleAuthDto, response: Response) {
         try {
-            const ticket = await this.oauth2Client.verifyIdToken({
-                idToken: token,
-                audience: process.env.GOOGLE_CLIENT_ID,
-            });
-    
-            const googleUser = ticket.getPayload();
-            if (!googleUser) throw new UnauthorizedException('Google login failed');
-    
-            let user = await this.userService.findUserByEmail(googleUser.email);
-    
-            let status: string;
-            if (!user) {
-                // Create a new user if none exists
+            const {name,email,confirmedEmail,userimg} = googleAuthDto
+
+            let user = await this.userService.findUserByEmail(email);
+            if (!user){
                 user = await this.userService.createUser({
-                    email: googleUser.email,
-                    name: googleUser.name,
-                    password: null, // Google users don't need a password
-                    role: 'user',
-                    confirmedEmail: true,
+                    email,
+                    name,
+                    password: null,
+                    confirmedEmail,
+                    userimg
                 });
-                status = 'new_user';
-            } else {
-                status = 'existing_user';
+
             }
+
+            response.clearCookie("auth_token", { path: '/', httpOnly: true, signed: true, sameSite: 'none', secure: true });
     
-            const payload = { sub: user._id }; // Use the user's unique identifier
-            const jwtToken = await this.jwtService.signAsync(payload);
+            const payload = { sub: user._id };
+
+            const token = await this.jwtService.signAsync(payload);
+
+            const expires = new Date();
+            expires.setDate(expires.getDate() + 7);
+
+            response.cookie("auth_token", token, { path: '/', expires, httpOnly: true, signed: true, sameSite: 'none', secure: true });
     
-            // Set JWT as a secure HTTP-only cookie
-            response.cookie("auth_token", jwtToken, {
-                path: '/',
-                httpOnly: true,
-                signed: true,
-                sameSite: 'none',
-                secure: true,
-            });
-    
-            // Remove sensitive fields before returning user details
             const userDetails = user.toObject();
             delete userDetails.password;
     
-            return { status, user: userDetails };
+            return userDetails;
         } catch (error) {
             throw new UnauthorizedException('Google authentication failed');
         }

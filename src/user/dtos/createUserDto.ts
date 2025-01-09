@@ -16,12 +16,14 @@ export class createUserDto {
     name: string;
 
     @IsString()
-    @IsNotEmpty()
     @IsOptional() 
-    role: string;
+    role?: string;
 
     @IsString()
     @IsNotEmpty()
-    @IsOptional() 
     confirmedEmail: boolean;
+
+    @IsString()
+    @IsOptional()
+    userimg?: string;
 }
