@@ -11,7 +11,7 @@ const testMongoString = process.env.MongoStringTest
 
 const productionMongoString = process.env.MongoStringProd
 
-
+console.log(process.env)
 
 const preferredDb = process.env.NODE_ENV == 'development' ? testMongoString :  productionMongoString
 

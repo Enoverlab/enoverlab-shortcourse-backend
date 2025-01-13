@@ -19,7 +19,7 @@ export class User {
     @Prop({ default: false })
     confirmedEmail: boolean;
   
-    @Prop({required : true, enum : ['local', 'googleAuth']})
+    @Prop({required : true, enum : ['local', 'googleAuth'], default : 'local'})
     authMethod: string;
 
     @Prop({required : false})

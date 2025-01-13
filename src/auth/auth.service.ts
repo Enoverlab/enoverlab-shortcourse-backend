@@ -2,7 +2,7 @@ import { HttpException, Injectable, NotFoundException, UnauthorizedException } f
 import { UserService } from '../user/user.service';
 import { signupDto } from './dto/signupDto';
 import { GoogleAuthDto } from './dto/google-auth.dto';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { loginDto } from './dto/loginDto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
@@ -80,6 +80,7 @@ export class AuthService {
                     name,
                     password: null,
                     confirmedEmail,
+                    authMethod : 'googleAuth',
                     userimg
                 });
 

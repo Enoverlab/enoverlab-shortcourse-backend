@@ -26,4 +26,8 @@ export class createUserDto {
     @IsString()
     @IsOptional()
     userimg?: string;
+
+    @IsString()
+    @IsOptional()
+    authMethod?: string;
 }
