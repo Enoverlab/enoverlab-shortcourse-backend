@@ -35,7 +35,7 @@ export class AuthService {
             return 'User successfully signed up';
         } catch (error) {
             if (error instanceof HttpException) {
-                throw new HttpException(error.message, 400);
+                throw new HttpException(error.message, 400); 
             }
             throw new HttpException('An error Occurred, Contact Dev Team', 404);
         }

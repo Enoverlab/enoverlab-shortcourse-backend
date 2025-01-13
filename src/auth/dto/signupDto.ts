@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from "class-validator"
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator"
 import { loginDto } from "./loginDto"
 
 export class signupDto extends loginDto {
@@ -8,10 +8,10 @@ export class signupDto extends loginDto {
     name : string
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     role: string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     confirmedEmail: boolean;
 }

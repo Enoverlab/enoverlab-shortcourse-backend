@@ -20,7 +20,7 @@ export class createUserDto {
     role?: string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional() 
     confirmedEmail: boolean;
 
     @IsString()
