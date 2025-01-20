@@ -8,7 +8,7 @@ export class MailService {
     constructor(private mailerService: MailerService) {}
   
     async sendUserConfirmation(user: User, token: string) {
-        const FeBaseUrl = process.env.NODE_ENV == 'development' ? 'http://localhost:5173' : 'https://enoverlab-shortcourse-fe.vercel.app'
+      const FeBaseUrl = process.env.NODE_ENV == 'development' ? process.env.FRONTEND_URL : 'https://enoverlab-shortcourse-fe.vercel.app'
       const url = FeBaseUrl + `/mail/confirm?token=${token}`;
       await this.mailerService.sendMail({
         to: user.email,
