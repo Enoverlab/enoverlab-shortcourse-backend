@@ -41,6 +41,15 @@ export class UserPaidCourse{
     @Prop({type: String, required : true })
     userId: User
 
+    @Prop({type : String, required : true})
+    trx_ref : string
+
+    @Prop({type : String, required : true})
+    trx_status : string
+
+    @Prop({type : String, required : true})
+    amount_paid : string
+
     @Prop()
     progress: [
         {

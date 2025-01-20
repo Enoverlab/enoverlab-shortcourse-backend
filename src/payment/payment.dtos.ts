@@ -8,4 +8,9 @@ export class initializePaymentDto{
     @IsString()
     @IsNotEmpty()
     callback_url : string
+
+    @IsString()
+    @IsNotEmpty()
+    courseId : string
+
 }

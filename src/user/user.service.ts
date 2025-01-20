@@ -1,12 +1,15 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { User } from 'src/user/user.schema';
+import { User, UserPaidCourse } from 'src/user/user.schema';
 import { createUserDto } from './dtos/createUserDto';
+import { createUserPaidCourseDto } from './dtos/createUserPaidCourseDto';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+    constructor(@InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(UserPaidCourse.name) private UserPaidCourseModel: Model<UserPaidCourse>
+) {}
 
     async createUser(createUserDto: createUserDto) {
         try {
@@ -17,6 +20,17 @@ export class UserService {
         } catch (error) {
             console.log(error);
             throw new HttpException(error.message || 'Error creating user', 400);
+        }
+    }
+
+    async createUserPaidCourse(createUserPaidCourseDto: createUserPaidCourseDto) {
+        try {
+            const paidCourse = new this.UserPaidCourseModel(createUserPaidCourseDto);
+            await paidCourse.save();
+            return;
+        } catch (error) {
+            console.log(error);
+            throw new HttpException(error.message || 'Error creating paid course', 400);
         }
     }
 
