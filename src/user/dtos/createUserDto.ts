@@ -20,10 +20,14 @@ export class createUserDto {
     role?: string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional() 
     confirmedEmail: boolean;
 
     @IsString()
     @IsOptional()
     userimg?: string;
+
+    @IsString()
+    @IsOptional()
+    authMethod?: string;
 }

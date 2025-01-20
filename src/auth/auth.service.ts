@@ -2,7 +2,7 @@ import { HttpException, Injectable, NotFoundException, UnauthorizedException } f
 import { UserService } from '../user/user.service';
 import { signupDto } from './dto/signupDto';
 import { GoogleAuthDto } from './dto/google-auth.dto';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { loginDto } from './dto/loginDto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
@@ -35,7 +35,7 @@ export class AuthService {
             return 'User successfully signed up';
         } catch (error) {
             if (error instanceof HttpException) {
-                throw new HttpException(error.message, 400);
+                throw new HttpException(error.message, 400); 
             }
             throw new HttpException('An error Occurred, Contact Dev Team', 404);
         }
@@ -80,6 +80,7 @@ export class AuthService {
                     name,
                     password: null,
                     confirmedEmail,
+                    authMethod : 'googleAuth',
                     userimg
                 });
 
