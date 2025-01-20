@@ -14,4 +14,10 @@ export class PaymentController {
     initializePayment(@Body() paymentInfo: initializePaymentDto, @Req() request:requestObj){
         return this.paymentService.initializePayment(paymentInfo, request)
     }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('webhook')
+    paymentWebhook(@Req() request:requestObj){
+        return this.paymentService.paymentWebhook(request)
+    }
 }
