@@ -34,6 +34,7 @@ export class PaymentService {
                     metadata : stringifiedData
                 }
                 const response = await axios.post('https://api.paystack.co/transaction/initialize', values)
+            console.log(response.data)
                 return response.data.data
         } catch (error) {
             console.log(error)
