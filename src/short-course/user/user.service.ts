@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { User, UserPaidCourse } from 'src/user/user.schema';
+import { User, UserPaidCourse } from 'src/short-course/user/user.schema';
 import { createUserDto } from './dtos/createUserDto';
 import { createUserPaidCourseDto } from './dtos/createUserPaidCourseDto';
 

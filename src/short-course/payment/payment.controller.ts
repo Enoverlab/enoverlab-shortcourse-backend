@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/short-course/auth/auth.guard';
 import { requestObj } from 'src/declarations';
 import { initializePaymentDto } from './payment.dtos';
 
