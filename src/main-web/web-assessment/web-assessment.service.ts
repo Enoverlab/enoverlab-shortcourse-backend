@@ -26,16 +26,19 @@ export class WebAssessmentService {
     async gradeUserAssessment(userId,userSubmission){
         try {
             const isValidId = Types.ObjectId.isValid(userId);
+            if(!isValidId ){
+                throw new HttpException('Bad Request', 404);
+            }
             const userInfo = await this.UserAssessmentModel.findById(userId)
-            if(!isValidId || !userInfo){
-                throw new HttpException('User not found', 404);
+            if(!userInfo ){
+                throw new HttpException('Bad Request', 404);
             }
             const {dataId,userData} = userSubmission
             const assessment = await this.assessmentQuestionModel.findById(dataId).lean();
             if (!assessment) throw new NotFoundException('Assessment not found');
         
             const aspectScores: Record<string, { total: number; correct: number }> = {};
-            const resultChoices : Record<string,{question : string, selectedOption : string | string[], correctAnswer : string | string[]}> = {}
+            const resultChoices : Record<string,{question : string, selectedOption : string | string[], correctAnswer : string | string[], options : string[], multipleAnswers : boolean}> = {}
         
             // ✅ Iterate through the questions & compare user answers
             for (const question of assessment.questions) {
@@ -50,7 +53,9 @@ export class WebAssessmentService {
               aspectScores[question.aspect].total += 1;
               resultChoices[questionId] = {
                 question : question.question,
+                options : question.options,
                 selectedOption: userAnswer,
+                multipleAnswers : question.multipleAnswers,
                 correctAnswer: question.multipleAnswers ? correctAnswers : correctAnswers[0],
             };
         
@@ -68,16 +73,16 @@ export class WebAssessmentService {
             // ✅ Compute percentage scores for each aspect
             const categorizedResults = Object.entries(aspectScores).map(([aspect, { total, correct }]) => ({
               aspect,
-              percentageScore: ((correct / total) * 100).toFixed(2) + '%',
+              percentageScore: ((correct / total) * 100).toFixed(0),
             }));
-            const results = Object.entries(resultChoices).map(([questionId, {selectedOption,correctAnswer,question}])=>({
-                questionId, selectedOption, correctAnswer, question
+            const results = Object.entries(resultChoices).map(([questionId, {selectedOption,correctAnswer,question,options,multipleAnswers}])=>({
+                questionId, selectedOption, correctAnswer, question,options, multipleAnswers
             }))
 
             const totalCorrect = Object.values(aspectScores).reduce((sum, { correct }) => sum + correct, 0);
             const totalQuestions = Object.values(aspectScores).reduce((sum, { total }) => sum + total, 0);
 
-            const totalPercentage = totalQuestions > 0 ? ((totalCorrect / totalQuestions) * 100).toFixed(2) + '%' : '0%';
+            const totalPercentage = totalQuestions > 0 ? ((totalCorrect / totalQuestions) * 100).toFixed(0) : '0';
             const feedback = `Your Total score for the Product Management Assessment is ${totalPercentage}%.`
             const submission = new this.AssessmentSubmissionModel({
                 userId,
@@ -88,6 +93,8 @@ export class WebAssessmentService {
 
             await submission.save()
 
+            await this.UserAssessmentModel.findByIdAndUpdate(userId,{$push : submission._id})
+
             return 'Submission Successful'
         } catch (error) {
             throw new HttpException(error.message,400)
@@ -96,9 +103,12 @@ export class WebAssessmentService {
     async getAssessmentQuestions(userId):Promise<assessmentQuestion>{
         try {
             const isValidId = Types.ObjectId.isValid(userId);
+            if(!isValidId ){
+                throw new HttpException('Bad Request', 404);
+            }
             const userInfo = await this.UserAssessmentModel.findById(userId)
-            if(!isValidId || !userInfo){
-                throw new HttpException('User not found', 404);
+            if(!userInfo ){
+                throw new HttpException('Bad Request', 404);
             }
             const assessmentQuestion = this.assessmentQuestionModel.findOne({active : true}).sort({ createdAt: -1 })
             return assessmentQuestion
@@ -114,15 +124,22 @@ export class WebAssessmentService {
     // }
     
     async getAssessmentResult(userId): Promise<AssessmentSubmission> {
-        const isValidId = Types.ObjectId.isValid(userId);
-        const userInfo = await this.UserAssessmentModel.findById(userId)
-        if(!isValidId || !userInfo){
-            throw new HttpException('User not found', 404);
+        try {
+            const isValidId = Types.ObjectId.isValid(userId);
+            if(!isValidId){
+                throw new HttpException('User not found', 404);
+            }
+            const userInfo = await this.UserAssessmentModel.findById(userId)
+            if(!userInfo){
+                throw new HttpException('User not found', 404);
+            }
+            const assessment = await this.AssessmentSubmissionModel.findOne({userId}).sort({ createdAt: -1 }).populate('userId');
+            if (!assessment) {
+                throw new NotFoundException('Assessment not found');
+            }
+            return assessment;
+        } catch (error) {
+            throw new HttpException(error.message, 400)
         }
-        const assessment = await this.AssessmentSubmissionModel.findOne({userId}).sort({ createdAt: -1 });
-        if (!assessment) {
-            throw new NotFoundException('Assessment not found');
-        }
-        return assessment;
     }
 }

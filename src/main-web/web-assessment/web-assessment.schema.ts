@@ -11,7 +11,7 @@ export class UserAssessment {
 
     @Prop({ required: true })
     phone_number: string;
-    @Prop()
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'AssessmentSubmission'})
     AssessmentSubmissions ?: AssessmentSubmission[]
 }
 
@@ -21,7 +21,7 @@ export class AssessmentSubmission{
   userId : UserAssessment
 
   @Prop({ type: Array, required: true })
-  answers: { questionId: string; selectedOption: string | string[]; correctAnswer : string | string[] }[];
+  answers: { questionId: string; selectedOption: string | string[]; correctAnswer : string | string[], options : String[] }[];
 
   @Prop({ type: Array, required: true})
   score: { aspect: string; percentageScore: string }[];

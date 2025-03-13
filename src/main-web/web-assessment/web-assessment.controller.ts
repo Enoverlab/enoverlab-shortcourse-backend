@@ -19,8 +19,14 @@ export class WebAssessmentController {
     }
 
     @HttpCode(HttpStatus.OK)
-    @Get('assessment-result')
-    submitAssessment(@Query('userId') userId : string){
+    @Post('submit-assessment')
+    submitAssessment(@Body() data: object, @Query('userId') userId : string){
+        return this.assessmentService.gradeUserAssessment(userId,data)
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Get('result')
+    getAssessmentResult(@Query('userId') userId : string){
         return this.assessmentService.getAssessmentResult(userId)
     }
 }
