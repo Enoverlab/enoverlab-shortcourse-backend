@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CoursesService, FileSizeValidationPipe } from './courses.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/short-course/auth/auth.guard';
 import { requestObj } from 'src/declarations';
 import { createCourseDto, getCourseDto } from './courses.dtos';
 import {Express} from 'express'

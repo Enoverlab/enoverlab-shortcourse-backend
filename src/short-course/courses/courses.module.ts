@@ -3,7 +3,7 @@ import { CoursesService } from './courses.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Course, CourseSchema } from './courses.schema';
 import { CoursesController } from './courses.controller';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from 'src/short-course/user/user.module';
 import { CloudinaryConfig } from 'src/config/cloudinary.config';
 
 @Module({

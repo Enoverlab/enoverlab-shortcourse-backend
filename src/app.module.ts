@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { CoursesModule } from './courses/courses.module';
-import { PaymentModule } from './payment/payment.module';
-import { MailModule } from './mail/mail.module';
+import { UserModule } from './short-course/user/user.module';
+import { AuthModule } from './short-course/auth/auth.module';
+import { CoursesModule } from './short-course/courses/courses.module';
+import { PaymentModule } from './short-course/payment/payment.module';
+import { MailModule } from './short-course/mail/mail.module';
+import { WebAssessmentModule } from './main-web/web-assessment/web-assessment.module';
+import { BlogModule } from './main-web/blog/blog.module';
 
 const testMongoString = process.env.MongoStringTest
 
@@ -17,7 +19,7 @@ const preferredDb = process.env.NODE_ENV == 'development' ? testMongoString :  p
   imports: [
     ConfigModule.forRoot({
     isGlobal : true
-  }), MongooseModule.forRoot(preferredDb), UserModule, AuthModule, CoursesModule, PaymentModule, MailModule],
+  }), MongooseModule.forRoot(preferredDb), UserModule, AuthModule, CoursesModule, PaymentModule, MailModule, WebAssessmentModule, BlogModule],
   controllers: [],
   providers: [],
 })

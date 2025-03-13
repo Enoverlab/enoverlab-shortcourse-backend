@@ -3,8 +3,8 @@ import { initializePaymentDto } from './payment.dtos';
 import axios from 'axios';
 import  { Request } from 'express';
 import * as crypto from "crypto"
-import { User, UserPaidCourse } from 'src/user/user.schema';
-import { UserService } from 'src/user/user.service';
+import { User, UserPaidCourse } from 'src/short-course/user/user.schema';
+import { UserService } from 'src/short-course/user/user.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -33,7 +33,9 @@ export class PaymentService {
                     currency : 'NGN',
                     metadata : stringifiedData
                 }
+                console.log(values)
                 const response = await axios.post('https://api.paystack.co/transaction/initialize', values)
+            console.log(response.data)
                 return response.data.data
         } catch (error) {
             console.log(error)

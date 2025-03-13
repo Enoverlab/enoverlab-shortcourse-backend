@@ -5,7 +5,7 @@ import { GoogleAuthDto } from './dto/google-auth.dto';
 import * as bcrypt from 'bcryptjs';
 import { loginDto } from './dto/loginDto';
 import { JwtService } from '@nestjs/jwt';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from 'src/short-course/mail/mail.service';
 import { Response } from 'express';
 
 @Injectable()
