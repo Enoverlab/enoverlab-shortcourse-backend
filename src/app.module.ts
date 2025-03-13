@@ -8,6 +8,7 @@ import { PaymentModule } from './short-course/payment/payment.module';
 import { MailModule } from './short-course/mail/mail.module';
 import { WebAssessmentModule } from './main-web/web-assessment/web-assessment.module';
 import { BlogModule } from './main-web/blog/blog.module';
+import { AppController } from './app.controller';
 
 const testMongoString = process.env.MongoStringTest
 
@@ -20,7 +21,7 @@ const preferredDb = process.env.NODE_ENV == 'development' ? testMongoString :  p
     ConfigModule.forRoot({
     isGlobal : true
   }), MongooseModule.forRoot(preferredDb), UserModule, AuthModule, CoursesModule, PaymentModule, MailModule, WebAssessmentModule, BlogModule],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}
