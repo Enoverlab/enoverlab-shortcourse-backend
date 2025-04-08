@@ -49,3 +49,9 @@ export class getCourseDto {
     @IsNotEmpty()
     courseId : string
 }
+
+export class  updateCourseTrack {
+    courseId : string
+    moduleId : string
+    status : string
+}

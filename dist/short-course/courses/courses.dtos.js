@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCourseDto = exports.createModuleDto = exports.createCourseDto = void 0;
+exports.updateCourseTrack = exports.getCourseDto = exports.createModuleDto = exports.createCourseDto = void 0;
 const class_validator_1 = require("class-validator");
 class createCourseDto {
 }
@@ -74,4 +74,7 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], getCourseDto.prototype, "courseId", void 0);
+class updateCourseTrack {
+}
+exports.updateCourseTrack = updateCourseTrack;
 //# sourceMappingURL=courses.dtos.js.map

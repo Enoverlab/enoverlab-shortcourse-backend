@@ -9,7 +9,7 @@ async function bootstrap() {
     app.useGlobalPipes(new common_1.ValidationPipe({ transform: true, transformOptions: {
             enableImplicitConversion: true,
         }, }));
-    app.enableCors({ origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'https://enoverlab-shortcourse-fe.vercel.app', 'https://enoverlab-shortcourse-fe-git-development-enoverlabs-projects.vercel.app'], credentials: true });
+    app.enableCors({ origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'https://enoverlab-shortcourse-fe.vercel.app', 'https://enoverlab-shortcourse-fe-git-development-enoverlabs-projects.vercel.app', 'https://www.enoverlab.com', 'enoverlab-web-git-enoverassess-enoverlabs-projects.vercel.app'], credentials: true });
     app.use(cookieParser(process.env.COOKIE_SECRET));
     await app.listen(process.env.PORT ?? 3000);
 }

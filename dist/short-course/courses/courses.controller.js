@@ -25,14 +25,14 @@ let CoursesController = class CoursesController {
     createCourse(courseDetails, request, file) {
         return this.courseService.createCourse(courseDetails, request, file);
     }
-    createModule(courseDetails, request) {
-        console.log('yay');
-    }
     getcourses(courseLevel, courseName) {
         return this.courseService.getAllCourses(courseLevel, courseName);
     }
     getcourseById(courseId) {
         return this.courseService.getCoursebyId(courseId);
+    }
+    updateCourseTrack(trackDetails, request) {
+        return this.courseService.updateCourseTrack(trackDetails, request);
     }
 };
 exports.CoursesController = CoursesController;
@@ -50,16 +50,6 @@ __decorate([
 ], CoursesController.prototype, "createCourse", null);
 __decorate([
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, common_1.Post)('create_module'),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [courses_dtos_1.createCourseDto, Object]),
-    __metadata("design:returntype", void 0)
-], CoursesController.prototype, "createModule", null);
-__decorate([
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Get)('getAllcourse'),
     __param(0, (0, common_1.Query)('courseLevel')),
     __param(1, (0, common_1.Query)('courseName')),
@@ -75,6 +65,16 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], CoursesController.prototype, "getcourseById", null);
+__decorate([
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Post)('update_course_track'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [courses_dtos_1.updateCourseTrack, Object]),
+    __metadata("design:returntype", void 0)
+], CoursesController.prototype, "updateCourseTrack", null);
 exports.CoursesController = CoursesController = __decorate([
     (0, common_1.Controller)('courses'),
     __metadata("design:paramtypes", [courses_service_1.CoursesService])

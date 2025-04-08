@@ -19,9 +19,11 @@ const auth_service_1 = require("./auth.service");
 const loginDto_1 = require("./dto/loginDto");
 const google_auth_dto_1 = require("./dto/google-auth.dto");
 const auth_guard_1 = require("./auth.guard");
+const user_service_1 = require("../user/user.service");
 let AuthController = class AuthController {
-    constructor(authservice) {
+    constructor(authservice, userService) {
         this.authservice = authservice;
+        this.userService = userService;
     }
     createUser(userData, response) {
         return this.authservice.signUp(userData, response);
@@ -87,6 +89,6 @@ __decorate([
 ], AuthController.prototype, "googleSignUp", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService, user_service_1.UserService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

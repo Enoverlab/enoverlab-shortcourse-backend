@@ -18,10 +18,12 @@ const courses_schema_1 = require("./courses.schema");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const fs = require("fs");
+const user_schema_1 = require("../user/user.schema");
 let CoursesService = class CoursesService {
-    constructor(courseModel, cloudinary) {
+    constructor(courseModel, cloudinary, UserPaidCourseModel) {
         this.courseModel = courseModel;
         this.cloudinary = cloudinary;
+        this.UserPaidCourseModel = UserPaidCourseModel;
     }
     async createCourse(courseDetails, request, file) {
         if (request.user.role !== 'admin')
@@ -66,7 +68,7 @@ let CoursesService = class CoursesService {
             if (!mongoose_2.default.Types.ObjectId.isValid(courseId)) {
                 throw new common_1.ForbiddenException('Course not found');
             }
-            const course = await this.courseModel.findById(courseId).exec();
+            const course = await this.courseModel.findById(courseId).populate('modules').exec();
             return course;
         }
         catch (error) {
@@ -74,7 +76,27 @@ let CoursesService = class CoursesService {
             throw new common_1.HttpException('An Error Occurred, contact Dev Team', 402);
         }
     }
-    async createModule() {
+    async updateCourseTrack(details, request) {
+        try {
+            const { courseId, moduleId, status } = details;
+            const duplicateReq = await this.UserPaidCourseModel.find({ 'progress.moduleId': { $in: [moduleId] } }).where('courseId').equals(courseId).exec();
+            if (duplicateReq) {
+                console.log('got here and was reversed');
+                return;
+            }
+            const data = {
+                moduleId,
+                status,
+                completedAt: new Date()
+            };
+            const update = await this.UserPaidCourseModel.findOneAndUpdate({ courseId }, { $push: { progress: data } }, { new: true }).where('userId').equals(request.user['_id']).exec();
+            console.log({ update });
+            return;
+        }
+        catch (error) {
+            console.log(error);
+            throw new common_1.HttpException(error.message || 'Error Updating your course track', 400);
+        }
     }
 };
 exports.CoursesService = CoursesService;
@@ -82,7 +104,8 @@ exports.CoursesService = CoursesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(courses_schema_1.Course.name)),
     __param(1, (0, common_1.Inject)('CLOUDINARY')),
-    __metadata("design:paramtypes", [mongoose_2.Model, Object])
+    __param(2, (0, mongoose_1.InjectModel)(user_schema_1.UserPaidCourse.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model, Object, mongoose_2.Model])
 ], CoursesService);
 class FileSizeValidationPipe {
     transform(value, metadata) {

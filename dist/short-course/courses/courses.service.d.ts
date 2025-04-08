@@ -1,12 +1,15 @@
 import { ArgumentMetadata, PipeTransform } from '@nestjs/common';
 import { Course } from './courses.schema';
 import mongoose, { Model } from 'mongoose';
-import { createCourseDto } from './courses.dtos';
+import { createCourseDto, updateCourseTrack } from './courses.dtos';
 import { v2 as Cloudinary } from 'cloudinary';
+import { UserPaidCourse } from '../user/user.schema';
+import { requestObj } from 'src/declarations';
 export declare class CoursesService {
     private courseModel;
     private readonly cloudinary;
-    constructor(courseModel: Model<Course>, cloudinary: typeof Cloudinary);
+    private UserPaidCourseModel;
+    constructor(courseModel: Model<Course>, cloudinary: typeof Cloudinary, UserPaidCourseModel: Model<UserPaidCourse>);
     createCourse(courseDetails: createCourseDto, request: any, file: Express.Multer.File): Promise<mongoose.Document<unknown, {}, Course> & Course & {
         _id: mongoose.Types.ObjectId;
     } & {
@@ -22,7 +25,7 @@ export declare class CoursesService {
     } & {
         __v: number;
     }>;
-    createModule(): Promise<void>;
+    updateCourseTrack(details: updateCourseTrack, request: requestObj): Promise<void>;
 }
 export declare class FileSizeValidationPipe implements PipeTransform {
     transform(value: any, metadata: ArgumentMetadata): any;

@@ -5,10 +5,11 @@ import { loginDto } from './dto/loginDto';
 import { GoogleAuthDto } from './dto/google-auth.dto';
 import { Request, Response } from 'express';
 import { AuthGuard } from './auth.guard';
+import { UserService } from '../user/user.service';
 
 @Controller('auth')
 export class AuthController {
-    constructor (private authservice : AuthService) {}
+    constructor (private authservice : AuthService, private userService : UserService) {}
 
     @Post('signup')
     @UsePipes(new ValidationPipe({transform : true}))

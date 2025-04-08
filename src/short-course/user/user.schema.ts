@@ -55,7 +55,7 @@ export class UserPaidCourse{
         {
         moduleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Module' },
         status: { type: String, enum: ['not started', 'in progress', 'completed'], default: 'not started' },
-        completedAt: { type: Date },
+        completedAt: { type: Date},
         },
     ]
 }

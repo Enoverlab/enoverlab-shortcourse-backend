@@ -4,6 +4,7 @@ import mongoose, { Model } from 'mongoose';
 import { User, UserPaidCourse } from 'src/short-course/user/user.schema';
 import { createUserDto } from './dtos/createUserDto';
 import { createUserPaidCourseDto } from './dtos/createUserPaidCourseDto';
+import { Request } from 'express';
 
 @Injectable()
 export class UserService {

@@ -38,6 +38,7 @@ let PaymentService = class PaymentService {
             };
             console.log(values);
             const response = await axios_1.default.post('https://api.paystack.co/transaction/initialize', values);
+            console.log(pk_key);
             console.log(response.data);
             return response.data.data;
         }

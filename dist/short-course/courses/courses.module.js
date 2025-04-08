@@ -14,6 +14,7 @@ const courses_schema_1 = require("./courses.schema");
 const courses_controller_1 = require("./courses.controller");
 const user_module_1 = require("../user/user.module");
 const cloudinary_config_1 = require("../../config/cloudinary.config");
+const user_schema_1 = require("../user/user.schema");
 let CoursesModule = class CoursesModule {
 };
 exports.CoursesModule = CoursesModule;
@@ -22,7 +23,7 @@ exports.CoursesModule = CoursesModule = __decorate([
         imports: [mongoose_1.MongooseModule.forFeature([{
                     name: courses_schema_1.Course.name,
                     schema: courses_schema_1.CourseSchema
-                }]), user_module_1.UserModule],
+                }, { name: common_1.Module.name, schema: courses_schema_1.ModuleSchema }, { name: user_schema_1.UserPaidCourse.name, schema: user_schema_1.UserPaidCourseSchema }]), user_module_1.UserModule],
         providers: [courses_service_1.CoursesService, cloudinary_config_1.CloudinaryConfig],
         controllers: [courses_controller_1.CoursesController]
     })

@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Uploaded
 import { CoursesService, FileSizeValidationPipe } from './courses.service';
 import { AuthGuard } from 'src/short-course/auth/auth.guard';
 import { requestObj } from 'src/declarations';
-import { createCourseDto, getCourseDto } from './courses.dtos';
+import { createCourseDto, updateCourseTrack } from './courses.dtos';
 import {Express} from 'express'
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -18,12 +18,6 @@ export class CoursesController {
         return this.courseService.createCourse(courseDetails, request, file)
     }
 
-    @HttpCode(HttpStatus.OK)
-    @Post('create_module')
-    @UseGuards(AuthGuard)
-    createModule(@Body() courseDetails: createCourseDto, @Req() request:requestObj){
-        console.log('yay')
-    }
 
     @HttpCode(HttpStatus.OK)
     @Get('getAllcourse')
@@ -35,6 +29,13 @@ export class CoursesController {
     @Get('getcourseById')
     getcourseById(@Query('courseId') courseId : string){
         return this.courseService.getCoursebyId(courseId)
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('update_course_track')
+    @UseGuards(AuthGuard)
+    updateCourseTrack(@Body() trackDetails: updateCourseTrack, @Req() request:requestObj){
+        return this.courseService.updateCourseTrack(trackDetails, request)
     }
 
 }

@@ -2,14 +2,16 @@ import { ArgumentMetadata, ForbiddenException, HttpException, Inject, Injectable
 import { Course } from './courses.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { createCourseDto } from './courses.dtos';
+import { createCourseDto, updateCourseTrack } from './courses.dtos';
 import {v2 as Cloudinary, UploadApiResponse} from 'cloudinary'
 import * as fs from 'fs'
+import {  UserPaidCourse } from '../user/user.schema';
+import { requestObj } from 'src/declarations';
 
 
 @Injectable()
 export class CoursesService {
-    constructor(@InjectModel(Course.name) private courseModel:Model<Course>, @Inject('CLOUDINARY') private readonly cloudinary: typeof Cloudinary){}
+    constructor(@InjectModel(Course.name) private courseModel:Model<Course>, @Inject('CLOUDINARY') private readonly cloudinary: typeof Cloudinary,@InjectModel(UserPaidCourse.name) private UserPaidCourseModel:Model<UserPaidCourse>){}
 
     async createCourse(courseDetails: createCourseDto, request, file: Express.Multer.File){
         if(request.user.role !== 'admin')
@@ -56,7 +58,7 @@ export class CoursesService {
             if(!mongoose.Types.ObjectId.isValid(courseId)){
                 throw new ForbiddenException('Course not found')
             }
-            const course = await this.courseModel.findById(courseId).exec()
+            const course = await this.courseModel.findById(courseId).populate('modules').exec()
             return course 
         } catch (error) {
             console.log(error)
@@ -64,9 +66,28 @@ export class CoursesService {
         }
     }
 
-    async createModule(){
-        
+    async updateCourseTrack(details : updateCourseTrack, request:requestObj){
+        try {
+            const {courseId, moduleId, status} = details
+            const duplicateReq = await this.UserPaidCourseModel.find({'progress.moduleId' : {$in : [moduleId]}}).where('courseId').equals(courseId).exec()
+            if(duplicateReq){
+                console.log('got here and was reversed')
+                return;
+            }
+            const data = {
+                moduleId,
+                status,
+                completedAt : new Date()
+            }
+            const update = await this.UserPaidCourseModel.findOneAndUpdate({courseId},{$push : {progress : data}},{new : true}).where('userId').equals(request.user['_id']).exec()
+            console.log({update})
+            return;
+        } catch (error) {
+            console.log(error);
+            throw new HttpException(error.message || 'Error Updating your course track', 400);
+        }
     }
+
 
 }
 

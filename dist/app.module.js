@@ -17,6 +17,7 @@ const payment_module_1 = require("./short-course/payment/payment.module");
 const mail_module_1 = require("./short-course/mail/mail.module");
 const web_assessment_module_1 = require("./main-web/web-assessment/web-assessment.module");
 const blog_module_1 = require("./main-web/blog/blog.module");
+const app_controller_1 = require("./app.controller");
 const testMongoString = process.env.MongoStringTest;
 const productionMongoString = process.env.MongoStringProd;
 const preferredDb = process.env.NODE_ENV == 'development' ? testMongoString : productionMongoString;
@@ -30,7 +31,7 @@ exports.AppModule = AppModule = __decorate([
                 isGlobal: true
             }), mongoose_1.MongooseModule.forRoot(preferredDb), user_module_1.UserModule, auth_module_1.AuthModule, courses_module_1.CoursesModule, payment_module_1.PaymentModule, mail_module_1.MailModule, web_assessment_module_1.WebAssessmentModule, blog_module_1.BlogModule
         ],
-        controllers: [],
+        controllers: [app_controller_1.AppController],
         providers: [],
     })
 ], AppModule);

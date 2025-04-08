@@ -1,6 +1,6 @@
 import { CoursesService } from './courses.service';
 import { requestObj } from 'src/declarations';
-import { createCourseDto } from './courses.dtos';
+import { createCourseDto, updateCourseTrack } from './courses.dtos';
 export declare class CoursesController {
     private courseService;
     constructor(courseService: CoursesService);
@@ -9,7 +9,6 @@ export declare class CoursesController {
     } & {
         __v: number;
     }>;
-    createModule(courseDetails: createCourseDto, request: requestObj): void;
     getcourses(courseLevel: string, courseName: string): Promise<(import("mongoose").Document<unknown, {}, import("./courses.schema").Course> & import("./courses.schema").Course & {
         _id: import("mongoose").Types.ObjectId;
     } & {
@@ -20,4 +19,5 @@ export declare class CoursesController {
     } & {
         __v: number;
     }>;
+    updateCourseTrack(trackDetails: updateCourseTrack, request: requestObj): Promise<void>;
 }

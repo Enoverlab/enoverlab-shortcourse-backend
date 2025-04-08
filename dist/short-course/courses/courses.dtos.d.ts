@@ -15,3 +15,8 @@ export declare class createModuleDto {
 export declare class getCourseDto {
     courseId: string;
 }
+export declare class updateCourseTrack {
+    courseId: string;
+    moduleId: string;
+    status: string;
+}

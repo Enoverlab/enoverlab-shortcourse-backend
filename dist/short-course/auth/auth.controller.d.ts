@@ -3,9 +3,11 @@ import { AuthService } from './auth.service';
 import { loginDto } from './dto/loginDto';
 import { GoogleAuthDto } from './dto/google-auth.dto';
 import { Request, Response } from 'express';
+import { UserService } from '../user/user.service';
 export declare class AuthController {
     private authservice;
-    constructor(authservice: AuthService);
+    private userService;
+    constructor(authservice: AuthService, userService: UserService);
     createUser(userData: signupDto, response: Response): Promise<string>;
     loginUser(userData: loginDto, response: Response): Promise<import("../user/user.schema").User & {
         _id: import("mongoose").Types.ObjectId;
